@@ -93,11 +93,6 @@ class JobListScreen extends StatelessWidget {
           return const Center(child: Text('Unknown state'));
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<JobBloc>().add(FetchJobs()),
-        backgroundColor: AppColors.primaryBlue,
-        child: const Icon(Icons.refresh, color: Colors.white),
-      ),
     );
   }
 

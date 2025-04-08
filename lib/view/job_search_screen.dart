@@ -41,14 +41,14 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
         builder: (context) {
           return Scaffold(
             backgroundColor: theme.scaffoldBackgroundColor,
-            appBar: AppBar(
-              title: const Text(
-                'Search Jobs',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: AppColors.primaryBlue,
-              elevation: 0,
-            ),
+            // appBar: AppBar(
+            //   title: const Text(
+            //     'Search Jobs',
+            //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            //   ),
+            //   backgroundColor: AppColors.primaryBlue,
+            //   elevation: 0,
+            // ),
             body: Column(
               children: [
                 _buildSearchBar(context, isDarkMode),

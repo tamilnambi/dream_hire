@@ -27,14 +27,10 @@ class JobCard extends StatelessWidget {
     final primaryTextColor = isDarkMode ? Colors.white : AppColors.secondaryBlue;
     final secondaryTextColor = isDarkMode
         ? Colors.white.withOpacity(0.8)
-        : AppColors.secondaryBlue.withOpacity(0.8);
+        : AppColors.secondaryBlue.withOpacity(0.7);
     final tertiaryTextColor = isDarkMode
         ? Colors.white.withOpacity(0.7)
-        : AppColors.secondaryBlue.withOpacity(0.7);
-
-    // Icon colors based on theme
-    final primaryIconColor = isDarkMode ? Colors.white : AppColors.secondaryBlue;
-    final accentIconColor = AppColors.primaryBlue;
+        : AppColors.secondaryBlue.withOpacity(0.6);
 
     // Card background color based on theme
     final cardBackgroundColor = isDarkMode
@@ -42,68 +38,88 @@ class JobCard extends StatelessWidget {
         : Colors.white;
 
     return Card(
-      elevation: 2,
+      elevation: 4,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: cardBackgroundColor,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              // Left side - Company Logo
+              _buildCompanyLogo(context),
+
+              const SizedBox(width: 16),
+
+              // Right side - Job Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          job.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: primaryTextColor,
+                        Expanded(
+                          child: Text(
+                            job.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: primaryTextColor,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          job.companyName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: secondaryTextColor,
-                            fontSize: 14,
+                        IconButton(
+                          icon: Icon(
+                            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            color: isBookmarked ? AppColors.primaryBlue : primaryTextColor,
+                            size: 22,
+                          ),
+                          onPressed: onBookmarkTap,
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                          tooltip: isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks',
+                        ),
+                      ],
+                    ),
+
+                    Text(
+                      job.companyName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: secondaryTextColor,
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Additional info
+                    Row(
+                      children: [
+                        _buildInfoChip(context, job.jobType, isDarkMode),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            job.candidateRequiredLocation,
+                            style: TextStyle(
+                              color: tertiaryTextColor,
+                              fontSize: 13,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  _buildCompanyLogo(context, primaryIconColor),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildJobInfoRow(context, Icons.work, job.jobType, accentIconColor, tertiaryTextColor),
-              const SizedBox(height: 6),
-              _buildJobInfoRow(context, Icons.location_on, job.candidateRequiredLocation, accentIconColor, tertiaryTextColor),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                      color: isBookmarked ? AppColors.primaryBlue : primaryIconColor,
-                    ),
-                    onPressed: onBookmarkTap,
-                    tooltip: isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks',
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -112,18 +128,18 @@ class JobCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCompanyLogo(BuildContext context, Color iconColor) {
+  Widget _buildCompanyLogo(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      width: 50,
-      height: 50,
+      width: 70,
+      height: 70,
       decoration: BoxDecoration(
-        color: isDarkMode ? Color(0xFF2A2A2A) : Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        color: isDarkMode ? Color(0xFF2A2A2A) : Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.2),
+            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -131,45 +147,41 @@ class JobCard extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         child: job.companyLogo != null
             ? Image.network(
           job.companyLogo!,
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Icon(
             Icons.business,
-            color: iconColor,
+            size: 30,
+            color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
           ),
         )
             : Icon(
           Icons.business,
-          color: iconColor,
+          size: 30,
+          color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
         ),
       ),
     );
   }
 
-  Widget _buildJobInfoRow(BuildContext context, IconData icon, String text, Color iconColor, Color textColor) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: iconColor,
+  Widget _buildInfoChip(BuildContext context, String text, bool isDarkMode) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isDarkMode ? AppColors.primaryBlue.withOpacity(0.2) : AppColors.primaryBlue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: AppColors.primaryBlue,
         ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 13,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
