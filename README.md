@@ -44,7 +44,8 @@ https://github.com/user-attachments/assets/b9bf7813-4b0b-4403-9465-f515fc052c42
 - Used for fetching remote job listings.
 
 ⚠️ **Note:** The **search endpoint** may occasionally return a `400 Bad Request` error. This appears to be an intermittent issue with the API itself.
-
+Sometimes the API works after running it directly in the browser. For example, after running the following api in a browser, try the same tag in the app.
+https://remotive.com/api/remote-jobs?search=java
 ---
 
 ## 🎨 Theming
