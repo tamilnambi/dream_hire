@@ -65,70 +65,65 @@ class JobListScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: size.width * 0.05),
-                      child: Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Find Your ',
-                                      style: TextStyle(
-                                        color: isDarkMode ? Colors.white : Colors.black87,
-                                        fontSize: textScaler.scale(26),
-                                        fontWeight: FontWeight.w300,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: 'Dream',
-                                      style: TextStyle(
-                                        color: AppColors.primaryBlue,
-                                        fontSize: textScaler.scale(30),
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.primaryBlue,
-                                      AppColors.secondaryBlue,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text(
-                                  'JOB',
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Find Your ',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: textScaler.scale(32),
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 2.0,
+                                    color: isDarkMode ? Colors.white : Colors.black87,
+                                    fontSize: textScaler.scale(26),
+                                    fontWeight: FontWeight.w300,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
-                              ),
-                            ],
+                                TextSpan(
+                                  text: 'Dream',
+                                  style: TextStyle(
+                                    color: AppColors.primaryBlue,
+                                    fontSize: textScaler.scale(30),
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primaryBlue,
+                                  AppColors.secondaryBlue,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Text(
+                              'JOB',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: textScaler.scale(32),
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 2.0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Hero(
-                        tag: 'logo',
-                        child: Image.asset(
-                            'assets/images/logo.png',
-                            height: logoSize
-                        )
+                      tag: 'logo',
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        height: logoSize,
+                      ),
                     ),
                   ],
                 ),
