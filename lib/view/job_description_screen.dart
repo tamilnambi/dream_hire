@@ -19,8 +19,6 @@ class JobDescriptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     final bookmarkBloc = context.watch<BookmarkBloc>();
     final isBookmarked = job.isBookmarked || bookmarkBloc.isJobBookmarked(job.id);
     final mediaQuery = MediaQuery.of(context);

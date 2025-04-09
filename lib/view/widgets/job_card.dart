@@ -25,7 +25,7 @@ class JobCard extends StatelessWidget {
     final isDarkMode = theme.brightness == Brightness.dark;
     final mediaQuery = MediaQuery.of(context);
     final screenSize = mediaQuery.size;
-    final textScaleFactor = mediaQuery.textScaleFactor;
+    final textScaler = mediaQuery.textScaler;
 
     // Adjust sizes based on screen width
     final isSmallScreen = screenSize.width < 360;
@@ -36,11 +36,11 @@ class JobCard extends StatelessWidget {
     // Text colors based on theme
     final primaryTextColor = isDarkMode ? Colors.white : AppColors.secondaryBlue;
     final secondaryTextColor = isDarkMode
-        ? Colors.white.withOpacity(0.8)
-        : AppColors.secondaryBlue.withOpacity(0.7);
+        ? Colors.white.withValues(alpha: 0.8)
+        : AppColors.secondaryBlue.withValues(alpha: 0.7);
     final tertiaryTextColor = isDarkMode
-        ? Colors.white.withOpacity(0.7)
-        : AppColors.secondaryBlue.withOpacity(0.6);
+        ? Colors.white.withValues(alpha: 0.7)
+        : AppColors.secondaryBlue.withValues(alpha: 0.6);
 
     // Card background color based on theme
     final cardBackgroundColor = isDarkMode
@@ -82,7 +82,7 @@ class JobCard extends StatelessWidget {
                             job.title,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16 * textScaleFactor,
+                              fontSize: textScaler.scale(16),
                               color: primaryTextColor,
                             ),
                             maxLines: 1,
@@ -108,7 +108,7 @@ class JobCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: secondaryTextColor,
-                        fontSize: 14 * textScaleFactor,
+                        fontSize: textScaler.scale(14),
                       ),
                     ),
 
@@ -117,14 +117,14 @@ class JobCard extends StatelessWidget {
                     // Additional info
                     Row(
                       children: [
-                        _buildInfoChip(context, job.jobType, isDarkMode, textScaleFactor),
+                        _buildInfoChip(context, job.jobType, isDarkMode, textScaler),
                         SizedBox(width: horizontalPadding * 0.5),
                         Expanded(
                           child: Text(
                             job.candidateRequiredLocation,
                             style: TextStyle(
                               color: tertiaryTextColor,
-                              fontSize: 13 * textScaleFactor,
+                              fontSize: textScaler.scale(13),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -154,7 +154,7 @@ class JobCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
+            color: Colors.black.withValues(alpha: isDarkMode ? 0.3 : 0.1),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -180,29 +180,29 @@ class JobCard extends StatelessWidget {
           errorWidget: (context, url, error) => Icon(
             Icons.business,
             size: size * 0.43, // Scale icon size relative to container
-            color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
+            color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withValues(alpha: 0.7),
           ),
         )
             : Icon(
           Icons.business,
           size: size * 0.43,
-          color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
+          color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withValues(alpha: 0.7),
         ),
       ),
     );
   }
 
-  Widget _buildInfoChip(BuildContext context, String text, bool isDarkMode, double textScaleFactor) {
+  Widget _buildInfoChip(BuildContext context, String text, bool isDarkMode, TextScaler textScaler) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isDarkMode ? AppColors.primaryBlue.withOpacity(0.2) : AppColors.primaryBlue.withOpacity(0.1),
+        color: isDarkMode ? AppColors.primaryBlue.withValues(alpha: 0.2) : AppColors.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12 * textScaleFactor,
+          fontSize: textScaler.scale(12),
           fontWeight: FontWeight.w500,
           color: AppColors.primaryBlue,
         ),

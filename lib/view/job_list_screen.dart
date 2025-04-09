@@ -22,7 +22,7 @@ class JobListScreen extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final size = mediaQuery.size;
     final isLandscape = size.width > size.height;
-    final textScaleFactor = mediaQuery.textScaleFactor;
+    final textScaler = mediaQuery.textScaler;
 
     // Calculate responsive values
     final headerHeight = size.height * (isLandscape ? 0.25 : 0.2);
@@ -79,7 +79,7 @@ class JobListScreen extends StatelessWidget {
                                       text: 'Find Your ',
                                       style: TextStyle(
                                         color: isDarkMode ? Colors.white : Colors.black87,
-                                        fontSize: 26 * textScaleFactor,
+                                        fontSize: textScaler.scale(26),
                                         fontWeight: FontWeight.w300,
                                         letterSpacing: 0.5,
                                       ),
@@ -88,7 +88,7 @@ class JobListScreen extends StatelessWidget {
                                       text: 'Dream',
                                       style: TextStyle(
                                         color: AppColors.primaryBlue,
-                                        fontSize: 30 * textScaleFactor,
+                                        fontSize: textScaler.scale(30),
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.0,
                                       ),
@@ -112,7 +112,7 @@ class JobListScreen extends StatelessWidget {
                                   'JOB',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 32 * textScaleFactor,
+                                    fontSize: textScaler.scale(32),
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 2.0,
                                   ),
@@ -150,7 +150,7 @@ class JobListScreen extends StatelessWidget {
                               Icon(
                                 Icons.error_outline,
                                 color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue,
-                                size: 48 * textScaleFactor,
+                                size: textScaler.scale(48),
                               ),
                               SizedBox(height: verticalPadding * 2),
                               Text(
@@ -158,7 +158,7 @@ class JobListScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue,
-                                  fontSize: 16 * textScaleFactor,
+                                  fontSize: textScaler.scale(16),
                                 ),
                               ),
                               SizedBox(height: verticalPadding * 3),
@@ -175,7 +175,7 @@ class JobListScreen extends StatelessWidget {
                                   'Try Again',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16 * textScaleFactor,
+                                    fontSize: textScaler.scale(16),
                                   ),
                                 ),
                               ),
@@ -221,7 +221,7 @@ class JobListScreen extends StatelessWidget {
 
   Widget _buildJobList(BuildContext context, List<Job> jobs, double horizontalPadding, double verticalPadding) {
     final mediaQuery = MediaQuery.of(context);
-    final textScaleFactor = mediaQuery.textScaleFactor;
+    final textScaler = mediaQuery.textScaler;
 
     // Use grid layout for landscape on larger screens
     final isLandscape = mediaQuery.size.width > mediaQuery.size.height;
@@ -241,7 +241,7 @@ class JobListScreen extends StatelessWidget {
         ),
         itemCount: jobs.length,
         itemBuilder: (context, index) {
-          return _buildJobItem(context, jobs[index], textScaleFactor);
+          return _buildJobItem(context, jobs[index], textScaler.scale(1.0));
         },
       );
     }
@@ -258,7 +258,7 @@ class JobListScreen extends StatelessWidget {
               horizontal: horizontalPadding,
               vertical: verticalPadding,
             ),
-            child: _buildJobItem(context, jobs[index], textScaleFactor),
+            child: _buildJobItem(context, jobs[index], textScaler.scale(1.0)),
           );
         },
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/theme/theme_bloc.dart';
 import '../../utils/app_colors.dart';
 
 class ApplyJobButton extends StatelessWidget {
@@ -12,10 +14,9 @@ class ApplyJobButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
+   // final isDarkMode = context.watch<ThemeBloc>().state.themeMode == ThemeMode.dark;
     final mediaQuery = MediaQuery.of(context);
-    final textScaleFactor = mediaQuery.textScaleFactor;
+    final textScaler = mediaQuery.textScaler;
 
     return ElevatedButton(
       onPressed: onPressed,
@@ -34,14 +35,14 @@ class ApplyJobButton extends StatelessWidget {
         children: [
           Icon(
             Icons.send_outlined,
-            size: 20 * textScaleFactor,
+            size: textScaler.scale(20),
             color: Colors.white,
           ),
           SizedBox(width: 8),
           Text(
             'Apply for this Job',
             style: TextStyle(
-              fontSize: 16 * textScaleFactor,
+              fontSize: textScaler.scale(16),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
