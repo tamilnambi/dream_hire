@@ -1,6 +1,8 @@
 # Dream Hire 🧑‍💼✨  
 A Flutter Job Listing App.
 
+https://github.com/user-attachments/assets/b9bf7813-4b0b-4403-9465-f515fc052c42
+
 ## 📱 Overview
 
 **Dream Hire** is a remote job listing app that fetches job data from the [Remotive API](https://remotive.com/api/remote-jobs). It demonstrates the use of:
