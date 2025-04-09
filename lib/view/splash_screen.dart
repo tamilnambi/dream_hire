@@ -31,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
         child: AnimatedScale(
@@ -38,14 +39,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           duration: const Duration(milliseconds: 800),
           curve: Curves.easeInOutBack,
           child: Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
+            width: size.width * 0.5,
+            height: size.width * 0.5,
+            // decoration: BoxDecoration(
+            //   color: Theme.of(context).colorScheme.primary,
+            //   shape: BoxShape.circle,
+            // ),
             child: Center(
-              child: Image.asset('assets/images/logo.jpeg', )
+              child: Hero(
+                  tag: 'logo',
+                  child: Image.asset('assets/images/logo.png', ))
             ),
           ),
         ),

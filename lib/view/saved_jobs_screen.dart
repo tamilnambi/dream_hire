@@ -16,44 +16,71 @@ class SavedJobsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final mediaQuery = MediaQuery.of(context);
+    final textScaler = mediaQuery.textScaler;
+    final screenSize = mediaQuery.size;
+    final horizontalPadding = screenSize.width * 0.04;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'Saved Jobs',
-      //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      //   ),
-      //   backgroundColor: AppColors.primaryBlue,
-      //   elevation: 0,
-      // ),
+      appBar: AppBar(
+        title: Text(
+          'Saved Jobs',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: textScaler.scale(18),
+            color: isDarkMode ? Colors.white : Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.primaryBlue,
+        elevation: isDarkMode ? 0 : 2,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(16),
+          ),
+        ),
+      ),
       body: BlocBuilder<BookmarkBloc, BookmarkState>(
         builder: (context, state) {
           if (state is BookmarkInitial || state is BookmarkLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primaryBlue,
+              ),
+            );
           } else if (state is BookmarksLoaded) {
             if (state.bookmarkedJobs.isEmpty) {
               return _buildEmptyState(context, isDarkMode);
             }
-            return _buildBookmarkedJobsList(context, state.bookmarkedJobs);
+            return _buildBookmarkedJobsList(
+                context,
+                state.bookmarkedJobs,
+                horizontalPadding
+            );
           } else if (state is BookmarkError) {
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 48,
-                    color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error: ${state.message}',
-                    style: TextStyle(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: textScaler.scale(48),
                       color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue,
                     ),
-                  ),
-                ],
+                    SizedBox(height: screenSize.height * 0.02),
+                    Text(
+                      'Error: ${state.message}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: textScaler.scale(16),
+                        color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -64,91 +91,123 @@ class SavedJobsScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, bool isDarkMode) {
+    final mediaQuery = MediaQuery.of(context);
+    final textScaler = mediaQuery.textScaler;
+    final screenSize = mediaQuery.size;
+    final horizontalPadding = screenSize.width * 0.08;
+
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.bookmark_border,
-            size: 64,
-            color: isDarkMode ? Colors.white54 : Colors.grey,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No saved jobs yet',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isDarkMode ? Colors.white : Colors.black87,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.bookmark_border,
+              size: textScaler.scale(64),
+              color: isDarkMode ? Colors.white.withValues(alpha: 0.54) : Colors.grey,
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Bookmark jobs to view them here',
-            style: TextStyle(
-              color: isDarkMode ? Colors.white54 : Colors.grey,
+            SizedBox(height: screenSize.height * 0.02),
+            Text(
+              'No saved jobs yet',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: textScaler.scale(18),
+                fontWeight: FontWeight.bold,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryBlue,
+            SizedBox(height: screenSize.height * 0.01),
+            Text(
+              'Bookmark jobs to view them here',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: textScaler.scale(14),
+                color: isDarkMode ? Colors.white.withValues(alpha: 0.54) : Colors.grey,
+              ),
             ),
-            child: const Text(
-              'Browse Jobs',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildBookmarkedJobsList(BuildContext context, List<Job> jobs) {
-    return ListView.builder(
-      itemCount: jobs.length,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemBuilder: (context, index) {
-        final job = jobs[index];
+  Widget _buildBookmarkedJobsList(
+      BuildContext context,
+      List<Job> jobs,
+      double horizontalPadding,
+      ) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenSize = mediaQuery.size;
 
-        return Dismissible(
-          key: Key('job_${job.id}'),
-          direction: DismissDirection.endToStart,
-          background: Container(
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.only(right: 20),
-            color: Colors.red,
-            child: const Icon(Icons.delete, color: Colors.white),
+    // Determine if we're on a tablet or large screen
+    final isLargeScreen = screenSize.width > 600;
+    final maxContentWidth = isLargeScreen ? 600.0 : double.infinity;
+
+    // Calculate spacing between cards
+    final verticalSpacing = screenSize.height * 0.012;
+
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxContentWidth),
+        child: ListView.separated(
+          itemCount: jobs.length,
+          padding: EdgeInsets.symmetric(
+            vertical: screenSize.height * 0.016,
+            //horizontal: horizontalPadding,
           ),
-          onDismissed: (_) {
-            context.read<BookmarkBloc>().add(RemoveBookmark(job.id));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${job.title} removed from bookmarks'),
-                behavior: SnackBarBehavior.floating,
+          separatorBuilder: (context, index) => SizedBox(height: verticalSpacing),
+          itemBuilder: (context, index) {
+            final job = jobs[index];
+
+            return Dismissible(
+              key: Key('job_${job.id}'),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: screenSize.width * 0.05),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade600,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              onDismissed: (_) {
+                context.read<BookmarkBloc>().add(RemoveBookmark(job.id));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${job.title} removed from bookmarks'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(
+                      bottom: screenSize.height * 0.02,
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                    ),
+                  ),
+                );
+              },
+              child: JobCard(
+                job: job,
+                isBookmarked: true,
+                onBookmarkTap: () {
+                  context.read<BookmarkBloc>().add(RemoveBookmark(job.id));
+                },
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => JobDescriptionScreen(job: job),
+                    ),
+                  );
+                },
               ),
             );
           },
-          child: JobCard(
-            job: job,
-            isBookmarked: true,
-            onBookmarkTap: () {
-              context.read<BookmarkBloc>().add(RemoveBookmark(job.id));
-            },
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => JobDescriptionScreen(job: job),
-                ),
-              );
-            },
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

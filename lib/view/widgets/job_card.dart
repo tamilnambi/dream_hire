@@ -1,5 +1,6 @@
 // widgets/job_card.dart
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/job/job_model.dart';
 import '../../utils/app_colors.dart';
@@ -22,6 +23,15 @@ class JobCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final mediaQuery = MediaQuery.of(context);
+    final screenSize = mediaQuery.size;
+    final textScaleFactor = mediaQuery.textScaleFactor;
+
+    // Adjust sizes based on screen width
+    final isSmallScreen = screenSize.width < 360;
+    final logoSize = isSmallScreen ? 60.0 : 70.0;
+    final horizontalPadding = screenSize.width * 0.04;
+    final verticalPadding = screenSize.height * 0.01;
 
     // Text colors based on theme
     final primaryTextColor = isDarkMode ? Colors.white : AppColors.secondaryBlue;
@@ -39,21 +49,25 @@ class JobCard extends StatelessWidget {
 
     return Card(
       elevation: 4,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       color: cardBackgroundColor,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(horizontalPadding),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Left side - Company Logo
-              _buildCompanyLogo(context),
+              _buildCompanyLogo(context, logoSize),
 
-              const SizedBox(width: 16),
+              SizedBox(width: horizontalPadding),
 
               // Right side - Job Details
               Expanded(
@@ -68,7 +82,7 @@ class JobCard extends StatelessWidget {
                             job.title,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 16 * textScaleFactor,
                               color: primaryTextColor,
                             ),
                             maxLines: 1,
@@ -79,11 +93,11 @@ class JobCard extends StatelessWidget {
                           icon: Icon(
                             isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                             color: isBookmarked ? AppColors.primaryBlue : primaryTextColor,
-                            size: 22,
+                            size: isSmallScreen ? 20 : 22,
                           ),
                           onPressed: onBookmarkTap,
                           padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(),
+                          constraints: const BoxConstraints(),
                           tooltip: isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks',
                         ),
                       ],
@@ -94,23 +108,23 @@ class JobCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: secondaryTextColor,
-                        fontSize: 14,
+                        fontSize: 14 * textScaleFactor,
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: verticalPadding * 2),
 
                     // Additional info
                     Row(
                       children: [
-                        _buildInfoChip(context, job.jobType, isDarkMode),
-                        const SizedBox(width: 8),
+                        _buildInfoChip(context, job.jobType, isDarkMode, textScaleFactor),
+                        SizedBox(width: horizontalPadding * 0.5),
                         Expanded(
                           child: Text(
                             job.candidateRequiredLocation,
                             style: TextStyle(
                               color: tertiaryTextColor,
-                              fontSize: 13,
+                              fontSize: 13 * textScaleFactor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -128,14 +142,15 @@ class JobCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCompanyLogo(BuildContext context) {
+  Widget _buildCompanyLogo(BuildContext context, double size) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
 
     return Container(
-      width: 70,
-      height: 70,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
-        color: isDarkMode ? Color(0xFF2A2A2A) : Colors.grey.shade100,
+        color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -148,28 +163,38 @@ class JobCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: job.companyLogo != null
-            ? Image.network(
-          job.companyLogo!,
+        child: job.companyLogo != null && job.companyLogo!.isNotEmpty
+            ? CachedNetworkImage(
+          imageUrl: job.companyLogo!,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Icon(
+          placeholder: (context, url) => Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: theme.colorScheme.secondary,
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(
             Icons.business,
-            size: 30,
+            size: size * 0.43, // Scale icon size relative to container
             color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
           ),
         )
             : Icon(
           Icons.business,
-          size: 30,
+          size: size * 0.43,
           color: isDarkMode ? Colors.white70 : AppColors.secondaryBlue.withOpacity(0.7),
         ),
       ),
     );
   }
 
-  Widget _buildInfoChip(BuildContext context, String text, bool isDarkMode) {
+  Widget _buildInfoChip(BuildContext context, String text, bool isDarkMode, double textScaleFactor) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: isDarkMode ? AppColors.primaryBlue.withOpacity(0.2) : AppColors.primaryBlue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -177,7 +202,7 @@ class JobCard extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: 12 * textScaleFactor,
           fontWeight: FontWeight.w500,
           color: AppColors.primaryBlue,
         ),
